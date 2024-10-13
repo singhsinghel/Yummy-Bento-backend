@@ -4,10 +4,11 @@ import connectDB from './config/db.js';
 import foodRouter from './routes/foodRoutes.js';
 import userRoute from './routes/userRoutes.js';
 import 'dotenv/config'
-
+import cartRouter from './routes/cartRoutes.js';
+import orderRouter from './routes/orderRoute.js';
 
 const app=express();
-const port =process.env.port||8080;
+const port =process.env.PORT||8080;
 
 //middleware
 app.use(express.json()) //for parsing the request recieved from frontend.
@@ -21,6 +22,8 @@ app.use('/api/food',foodRouter);
 //mounted uploads folder to access file by giving filename
 app.use('/images',express.static('uploads')); 
 app.use('/api/user',userRoute);
+app.use('/api/cart',cartRouter);
+app.use('/api/order',orderRouter)
 
 app.get('/',(req,res)=>{
     res.send('hiii');

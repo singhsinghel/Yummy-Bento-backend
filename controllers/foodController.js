@@ -22,7 +22,6 @@ const showFood=async(req,res)=>{
     try{
     const foods= await Food.find({});
     res.json({success:true,data:foods})
-    console.log(foods);
     }catch(err){
        console.log(err);
        res.json({success:false,message:err})
@@ -39,8 +38,17 @@ const removeFood=async(req,res)=>{
    }catch(err){
     console.log(err);
     res.json({success:false,message:'Error occured while deleting'})
-    
    }
+}
+
+const updateFood=async(req,res)=>{
+    try{
+        const food = await Food.findByIdAndUpdate(req.params.id,req.body)
+        res.json({success:true,message:'Item updated successfully'});
+
+    }catch(err){
+        res.json({success:false,message:'Error occured while updating'})
+    }
 }
 
 export  {addFood,showFood,removeFood}
