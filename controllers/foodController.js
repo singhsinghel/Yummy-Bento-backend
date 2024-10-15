@@ -4,7 +4,7 @@ import fs from 'fs';
 //add food item
 const addFood= async(req,res)=>{
     const {name,description,price,category}=req.body
-    
+
     let imageFileName=req.file.filename;
     
     const newFood=  new Food({name,description,price,category,image:imageFileName});
@@ -41,6 +41,21 @@ const removeFood=async(req,res)=>{
    }
 }
 
+//search food
+const searchFood=async(req,res)=>{
+    const {query}=req.body;
+    try {
+        const regex = new RegExp(query, 'i'); 
+        const searchFields = ['title', 'description','category'];
+        const searchConditions = searchFields.map(field => ({
+        [field]: { $regex: regex }
+        }));
+        const foods=  await Food.find({ $or:searchConditions});  
+        res.json({success:true,data:foods,message:"fetched successfully"})
+    } catch (error) {
+        console.log(error);
+    }
+}
 const updateFood=async(req,res)=>{
     try{
         const food = await Food.findByIdAndUpdate(req.params.id,req.body)
@@ -51,4 +66,4 @@ const updateFood=async(req,res)=>{
     }
 }
 
-export  {addFood,showFood,removeFood}
+export  {addFood,showFood,removeFood,searchFood}
