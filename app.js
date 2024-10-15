@@ -6,9 +6,13 @@ import userRoute from './routes/userRoutes.js';
 import 'dotenv/config'
 import cartRouter from './routes/cartRoutes.js';
 import orderRouter from './routes/orderRoute.js';
+import cron from 'node-cron';
 
 const app=express();
 const port =process.env.PORT||8080;
+cron.schedule('* * * *', () => {
+    console.log('running every minute');
+  });
 
 //middleware
 app.use(express.json()) //for parsing the request recieved from frontend.
