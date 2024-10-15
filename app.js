@@ -6,6 +6,9 @@ import userRoute from './routes/userRoutes.js';
 import 'dotenv/config'
 import cartRouter from './routes/cartRoutes.js';
 import orderRouter from './routes/orderRoute.js';
+import schedule from 'node-schedule'
+import axios from 'axios'
+
 
 
 const app=express();
@@ -24,12 +27,25 @@ app.use('/api/food',foodRouter);
 app.use('/images',express.static('uploads')); 
 app.use('/api/user',userRoute);
 app.use('/api/cart',cartRouter);
-app.use('/api/order',orderRouter)
+
+
+const keepAliveJob = schedule.scheduleJob('* * * * * *', async () => {
+    try {
+        // Replace with your actual app URL
+        await axios.get(`https://yummy-bento-backend.onrender.com/ping`);
+        console.log('Ping successful');
+    } catch (error) {
+        console.log('Ping failed:', error.message);
+    }
+});
 
 app.get('/',(req,res)=>{
     res.send('hiii');
 });
-
+app.get('/ping', (req, res) => {
+    res.sendStatus(200); // Respond to the ping
+});
+app.use('/api/order',orderRouter)
 
 app.listen(port,()=>{
     console.log('App is listening on server '+port);
