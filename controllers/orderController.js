@@ -76,6 +76,36 @@ const verifyOrder=async(req,res)=>{
       res.json({success:false,message:"Error Occured"})
       
    }
- 
 }
-export  {placeOrder,verifyOrder}
+
+const userOrders=async(req,res)=>{
+   try {
+      const orders=await Order.find({userId:req.body.userId});      
+      res.json({success:true,data:orders});
+   } catch (error) {
+      res.json({success:false,message:"Error occured"})
+   }
+}
+
+//orders for admin panel
+const fetchOrders=async(req,res)=>{
+   try{
+      const orders=await Order.find({});      
+      res.json({success:true,data:orders});
+   }catch{
+      res.json({success:false,message:'Error occured'})
+   }
+}
+
+const changeStatus=async(req,res)=>{
+     try {
+       const {orderId,status}=req.body;
+       const order=await Order.findByIdAndUpdate(orderId,{status},{new:true}); 
+       console.log(order);
+          
+       res.json({success:true,status:status});
+     } catch (error) {
+      res.json({success:false,message:"error Occurred"})
+     }
+}
+export  {placeOrder,verifyOrder,userOrders,fetchOrders,changeStatus}
