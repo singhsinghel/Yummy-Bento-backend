@@ -32,8 +32,7 @@ app.use('/api/cart',cartRouter);
 const keepAliveJob = schedule.scheduleJob('*/5 * * * *', async () => {
     try {
         // Replace with your actual app URL
-        await axios.get(`https://yummy-bento-backend.onrender.com/ping`);
-        console.log('Ping successful');
+        await axios.get(`https://yummy-bento-backend.onrender.com/ping`)
     } catch (error) {
         console.log('Ping failed:', error.message);
     }
