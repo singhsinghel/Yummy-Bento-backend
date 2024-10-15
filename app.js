@@ -29,7 +29,7 @@ app.use('/api/user',userRoute);
 app.use('/api/cart',cartRouter);
 
 
-const keepAliveJob = schedule.scheduleJob('* * * * * *', async () => {
+const keepAliveJob = schedule.scheduleJob('*/5 * * * *', async () => {
     try {
         // Replace with your actual app URL
         await axios.get(`https://yummy-bento-backend.onrender.com/ping`);
