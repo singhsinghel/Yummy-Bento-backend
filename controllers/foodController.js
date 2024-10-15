@@ -46,7 +46,7 @@ const searchFood=async(req,res)=>{
     const {query}=req.body;
     try {
         const regex = new RegExp(query, 'i'); 
-        const searchFields = ['title', 'description','category'];
+        const searchFields = ['name', 'description','category'];
         const searchConditions = searchFields.map(field => ({
         [field]: { $regex: regex }
         }));
