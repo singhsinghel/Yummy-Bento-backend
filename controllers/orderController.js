@@ -5,7 +5,7 @@ import Stripe from "stripe"
 const stripe=new Stripe(process.env.STRIPE_SECRET_KEY)
 
 const placeOrder=async(req,res)=>{
-   const frontendUrl='https://yummy-bento.vercel.app';
+   const frontendUrl='https://yummy-bento.onrender.com/';
    try {
       //creating order
       const order=await new Order({
@@ -49,7 +49,7 @@ const placeOrder=async(req,res)=>{
          mode:'payment',
          success_url:`${frontendUrl}/verify?success=true&orderId=${order._id}`,
          cancel_url:`${frontendUrl}/verify?succes=false&orderId=${order._id}`,   
-      });
+      }); 
       res.json({success:true,session_url:session.url,message:"redirecting"});
    } catch (error) {
       console.log(error);
