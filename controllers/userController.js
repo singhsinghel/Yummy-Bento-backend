@@ -9,9 +9,6 @@ const createToken=(id)=>{
 
 const createUser=async(req,res)=>{
    const {name,email,password}= req.body;
-   console.log(req.body);
-   
-   
    try{
         const exist = await User.findOne({email});
          if(exist)
@@ -28,9 +25,9 @@ const createUser=async(req,res)=>{
       const salt=await bcrypt.genSalt(10)
       const hashedPassword=await bcrypt.hash(password,salt);
       
-      const user= new User({name,email,password:hashedPassword})
+      const user= new User({name,email,password:hashedPassword});
+      user.coupon.push('Welcome60');
       await user.save();
-
       const token=createToken(user._id);
       res.json({success:true,token,message:`Welcome ${user.name}`})
    }catch(err){

@@ -54,11 +54,8 @@ const placeOrder=async(req,res)=>{
    } catch (error) {
       console.log(error);
       res.json({success:false,messsage:"error occured"})
-      
-      
    }
 }
-
 const verifyOrder=async(req,res)=>{
    try {
       const {success,orderId}=req.body;
@@ -108,4 +105,17 @@ const changeStatus=async(req,res)=>{
       res.json({success:false,message:"error Occurred"})
      }
 }
-export  {placeOrder,verifyOrder,userOrders,fetchOrders,changeStatus}
+const getDiscount=async(req,res)=>{
+   try {
+      const {userId}=req.body;
+      console.log(req.body);
+      
+      const user=await User.findById(userId);
+      
+      res.json({success:true,data:user});
+      
+   } catch (error) {
+      res.json({success:false,message:"error occured while getting coupon code"})
+   }
+}
+export  {placeOrder,verifyOrder,userOrders,fetchOrders,changeStatus,getDiscount}

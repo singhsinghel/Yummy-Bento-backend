@@ -27,7 +27,7 @@ app.use('/api/food',foodRouter);
 app.use('/images',express.static('uploads')); 
 app.use('/api/user',userRoute);
 app.use('/api/cart',cartRouter);
-
+app.use('/api/order',orderRouter);
 
 const keepAliveJob = schedule.scheduleJob('*/5 * * * *', async () => {
     try {
@@ -44,7 +44,7 @@ app.get('/ping', (req, res) => {
 app.get('/',(req,res)=>{
     res.send('hiii');
 });
-app.use('/api/order',orderRouter)
+
 
 app.listen(port,()=>{
     console.log('App is listening on server '+port);
