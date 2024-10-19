@@ -26,7 +26,7 @@ const createUser=async(req,res)=>{
       const hashedPassword=await bcrypt.hash(password,salt);
       
       const user= new User({name,email,password:hashedPassword});
-      user.coupon.push('Welcome60');
+      user.coupon.push({ name: 'WELCOME60', discount: 60 });
       await user.save();
       const token=createToken(user._id);
       res.json({success:true,token,message:`Welcome ${user.name}`})
