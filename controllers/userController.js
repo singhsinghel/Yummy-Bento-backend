@@ -47,7 +47,7 @@ const loginUser=async(req,res)=>{
    
    if(!user)
     return res.json({success:false,message:"User doesn't exists!"})
-
+   
    //comparing passwords
    const isMatch=await bcrypt.compare(password,user.password)
    
@@ -55,6 +55,7 @@ const loginUser=async(req,res)=>{
     return  res.json({success:false,message:"Incorrect password"});
    
    const token=createToken(user._id);
+
    res.json({success:true,token,message:`Welcome back ${user.name}`})
 
   } catch (error) {

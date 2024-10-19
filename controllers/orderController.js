@@ -11,10 +11,13 @@ const placeOrder=async(req,res)=>{
       const order=await new Order({
       userId:req.body.userId,
       items:req.body.items,
+      totalAmount:req.body.totalAmount,
       amount:req.body.amount,
+      discount:req.body.totalAmount-req.body.amount,
       address:req.body.address
       });
-
+      console.log(order);
+   
       //saving order in database
       await order.save();
 
@@ -44,11 +47,22 @@ const placeOrder=async(req,res)=>{
       },
       quantity:1
       });
+      const coupon = await stripe.coupons.create({
+            duration: 'repeating',
+            name:"Welcome60",
+            duration_in_months: 3,
+            percent_off: 60,
+          });
       const session= await stripe.checkout.sessions.create({
          line_items:lineItems,
          mode:'payment',
          success_url:`${frontendUrl}verify?success=true&orderId=${order._id}`,
          cancel_url:`${frontendUrl}verify?succes=false&orderId=${order._id}`,   
+         discounts: [
+            {
+              coupon: coupon.id, // Apply the coupon to this session
+            },
+          ],
       }); 
       res.json({success:true,session_url:session.url,message:"redirecting"});
    } catch (error) {
@@ -109,6 +123,7 @@ const getDiscount=async(req,res)=>{
    try {
       const {userId}=req.body;      
       const user=await User.findById(userId);
+      
       res.json({success:true,data:user.coupon});
       
    } catch (error) {

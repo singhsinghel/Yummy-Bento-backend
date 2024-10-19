@@ -5,6 +5,8 @@ const orderSchema=new Schema({
     userId:{type:String,required:true},
     items:{type:Array,requird:true},
     amount:{type:Number,required:true},
+    totalAmount:{type:Number,required:true},
+    dscount:{type:Number},
     address:{type:Object,required:true},
     status:{type:String, default:"Food Processing"},
     date:{type:Date,default:Date.now()},
