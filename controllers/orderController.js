@@ -16,9 +16,10 @@ const placeOrder=async(req,res)=>{
       discount:req.body.totalAmount-req.body.amount,
       address:req.body.address,
       });
-      const discountPercentage=parseInt(((((req.body.totalAmount+20)-req.body.amount)/req.body.totalAmount) * 100))
+
+      
       console.log(order);
-   
+      
       //saving order in database
       await order.save();
 
@@ -36,23 +37,22 @@ const placeOrder=async(req,res)=>{
          },
          quantity:item.quantity
       }));
-
-      const coupon = await stripe.coupons.create({
+      
+      let coupon;
+      if(order.amount!==order.totalAmount){
+          const discountPercentage=parseInt(((((req.body.totalAmount+20)-req.body.amount)/req.body.totalAmount) * 100))
+          coupon = await stripe.coupons.create({
             duration: 'repeating',
             name:`${discountPercentage}% off on fresh items`,
             duration_in_months: 3,
             percent_off: discountPercentage,
           });
-      const session= await stripe.checkout.sessions.create({
+         }
+    const sessionData=   {
          line_items:lineItems,
          mode:'payment',
          success_url:`${frontendUrl}verify?success=true&orderId=${order._id}`,
          cancel_url:`${frontendUrl}verify?succes=false&orderId=${order._id}`,   
-         discounts: [
-            {
-              coupon: coupon.id,
-            },
-         ],
          shipping_options:[{
             shipping_rate_data: {
                type: 'fixed_amount',
@@ -63,7 +63,15 @@ const placeOrder=async(req,res)=>{
                display_name: 'Delivery Charges',
             }
          }]
-      }); 
+      }
+      if(coupon){
+         sessionData.discounts = [
+            {
+              coupon: coupon.id,
+            },
+          ];
+      }
+      const session= await stripe.checkout.sessions.create(sessionData); 
       res.json({success:true,session_url:session.url,message:"redirecting"});
    } catch (error) {
       console.log(error);
