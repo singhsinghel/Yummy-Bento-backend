@@ -15,9 +15,9 @@ const placeOrder=async(req,res)=>{
       amount:req.body.amount,
       discount:req.body.totalAmount-req.body.amount,
       address:req.body.address,
-      discountPercentage : ((req.body.totalAmount - req.body.amount) / req.body.totalAmount) * 100
       });
-      console.log(order.discountPercentage);
+      const discountPercentage=parseInt(((((req.body.totalAmount+20)-req.body.amount)/req.body.totalAmount) * 100))
+      console.log(order);
    
       //saving order in database
       await order.save();
@@ -37,22 +37,11 @@ const placeOrder=async(req,res)=>{
          quantity:item.quantity
       }));
 
-      //adding delivery charges
-      lineItems.push({
-      price_data:{
-         currency:"inr",
-         product_data:{
-            name:"Delivery Charges"
-         },
-         unit_amount:20*100,
-      },
-      quantity:1
-      });
       const coupon = await stripe.coupons.create({
             duration: 'repeating',
-            name:`${order.discountPercentage}% off on fresh items`,
+            name:`${discountPercentage}% off on fresh items`,
             duration_in_months: 3,
-            percent_off: order.discountPercentage,
+            percent_off: discountPercentage,
           });
       const session= await stripe.checkout.sessions.create({
          line_items:lineItems,
@@ -63,7 +52,17 @@ const placeOrder=async(req,res)=>{
             {
               coupon: coupon.id,
             },
-          ],
+         ],
+         shipping_options:[{
+            shipping_rate_data: {
+               type: 'fixed_amount',
+               fixed_amount: {
+                 amount: 20*100, // Fixed delivery charge in cents
+                 currency: 'inr',
+               },
+               display_name: 'Delivery Charges',
+            }
+         }]
       }); 
       res.json({success:true,session_url:session.url,message:"redirecting"});
    } catch (error) {
