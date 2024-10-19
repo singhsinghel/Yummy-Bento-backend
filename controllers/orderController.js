@@ -14,9 +14,10 @@ const placeOrder=async(req,res)=>{
       totalAmount:req.body.totalAmount,
       amount:req.body.amount,
       discount:req.body.totalAmount-req.body.amount,
-      address:req.body.address
+      address:req.body.address,
+      discountPercentage : ((req.body.totalAmount - req.body.amount) / req.body.totalAmount) * 100
       });
-      console.log(order);
+      console.log(order.discountPercentage);
    
       //saving order in database
       await order.save();
@@ -49,9 +50,9 @@ const placeOrder=async(req,res)=>{
       });
       const coupon = await stripe.coupons.create({
             duration: 'repeating',
-            name:"Welcome60",
+            name:`${order.discountPercentage}% off on fresh items`,
             duration_in_months: 3,
-            percent_off: 60,
+            percent_off: order.discountPercentage,
           });
       const session= await stripe.checkout.sessions.create({
          line_items:lineItems,
@@ -60,7 +61,7 @@ const placeOrder=async(req,res)=>{
          cancel_url:`${frontendUrl}verify?succes=false&orderId=${order._id}`,   
          discounts: [
             {
-              coupon: coupon.id, // Apply the coupon to this session
+              coupon: coupon.id,
             },
           ],
       }); 
