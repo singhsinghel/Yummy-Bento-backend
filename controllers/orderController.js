@@ -107,12 +107,9 @@ const changeStatus=async(req,res)=>{
 }
 const getDiscount=async(req,res)=>{
    try {
-      const {userId}=req.body;
-      console.log(req.body);
-      
+      const {userId}=req.body;      
       const user=await User.findById(userId);
-      
-      res.json({success:true,data:user});
+      res.json({success:true,data:user.coupon});
       
    } catch (error) {
       res.json({success:false,message:"error occured while getting coupon code"})
