@@ -7,6 +7,7 @@ const stripe=new Stripe(process.env.STRIPE_SECRET_KEY)
 const placeOrder=async(req,res)=>{
    const frontendUrl='https://yummy-bento.onrender.com/';
    try {
+
       //creating order
       const order=await new Order({
       userId:req.body.userId,
@@ -16,9 +17,6 @@ const placeOrder=async(req,res)=>{
       discount:req.body.totalAmount-req.body.amount,
       address:req.body.address,
       });
-
-      
-      console.log(order);
       
       //saving order in database
       await order.save();
@@ -72,6 +70,18 @@ const placeOrder=async(req,res)=>{
           ];
       }
       const session= await stripe.checkout.sessions.create(sessionData); 
+
+      //adding new coupon and removing used one
+      const newDiscount=order.totalAmount>500?25:10;
+      await User.findByIdAndUpdate(req.body.userId,{$pull:{coupon:{_id:req.body.coupon}}},{new:true});
+      const user=await User.findByIdAndUpdate(
+         req.body.userId,
+         {
+          $push:{
+            coupon:{name:`Extra ${newDiscount}% off`,discount:newDiscount}
+         }}
+         ,{new:true});
+
       res.json({success:true,session_url:session.url,message:"redirecting"});
    } catch (error) {
       console.log(error);
