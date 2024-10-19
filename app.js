@@ -38,11 +38,11 @@ const keepAliveJob = schedule.scheduleJob('*/5 * * * *', async () => {
     }
 });
 
-app.get('/',(req,res)=>{
-    res.send('hiii');
-});
 app.get('/ping', (req, res) => {
     res.sendStatus(200); // Respond to the ping
+});
+app.get('/',(req,res)=>{
+    res.send('hiii');
 });
 app.use('/api/order',orderRouter)
 
