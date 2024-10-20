@@ -8,7 +8,7 @@ import cartRouter from './routes/cartRoutes.js';
 import orderRouter from './routes/orderRoute.js';
 import schedule from 'node-schedule'
 import axios from 'axios'
-
+import adminRouter from './routes/adminRoutes.js';
 
 
 const app=express();
@@ -28,6 +28,7 @@ app.use('/images',express.static('uploads'));
 app.use('/api/user',userRoute);
 app.use('/api/cart',cartRouter);
 app.use('/api/order',orderRouter);
+app.use('/api/admin',adminRouter)
 
 const keepAliveJob = schedule.scheduleJob('*/5 * * * *', async () => {
     try {

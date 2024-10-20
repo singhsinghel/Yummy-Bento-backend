@@ -1,11 +1,8 @@
 import User from "../models/userModel.js"
-import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 import validator from 'validator'
+import { createToken } from "../middleware/authMiddleware.js";
 
-const createToken=(id)=>{
-    return jwt.sign({id},process.env.JWT_SECRET)
-}
 
 const createUser=async(req,res)=>{
    const {name,email,password}= req.body;
@@ -26,6 +23,8 @@ const createUser=async(req,res)=>{
       const hashedPassword=await bcrypt.hash(password,salt);
       
       const user= new User({name,email,password:hashedPassword});
+
+      //addig a coupon for creating account
       user.coupon.push({ name: 'WELCOME60', discount: 60 });
       await user.save();
       const token=createToken(user._id);

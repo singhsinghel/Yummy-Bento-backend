@@ -14,12 +14,11 @@ const placeOrder=async(req,res)=>{
       items:req.body.items,
       totalAmount:req.body.totalAmount,
       amount:req.body.amount,
-      discount:req.body.totalAmount-req.body.amount,
       address:req.body.address,
       });
       
       //saving order in database
-      await order.save();
+      await order.save();      
 
       //cleaning user's cart Data
       await User.findByIdAndUpdate(req.body.userId,{cartData:{}});
@@ -36,17 +35,19 @@ const placeOrder=async(req,res)=>{
          quantity:item.quantity
       }));
       
+      //apply coupon if discount exists
       let coupon;
       if(order.amount!==order.totalAmount){
-          const discountPercentage=parseInt(((((req.body.totalAmount+20)-req.body.amount)/req.body.totalAmount) * 100))
+          const discountPercentage=parseInt(((((req.body.totalAmount)-req.body.amount)/req.body.totalAmount) * 100))
           coupon = await stripe.coupons.create({
             duration: 'repeating',
             name:`${discountPercentage}% off on fresh items`,
             duration_in_months: 3,
             percent_off: discountPercentage,
           });
-         }
-    const sessionData=   {
+      }
+      //create stripe session   
+      const sessionData=   {
          line_items:lineItems,
          mode:'payment',
          success_url:`${frontendUrl}verify?success=true&orderId=${order._id}`,
@@ -71,7 +72,7 @@ const placeOrder=async(req,res)=>{
       }
       const session= await stripe.checkout.sessions.create(sessionData); 
 
-      //adding new coupon and removing used one
+      //updating coupon data
       const newDiscount=order.totalAmount>500?25:10;
       if (coupon) {
          await User.findByIdAndUpdate(req.body.userId,{$pull:{coupon:{_id:req.body.coupon}}},{new:true});

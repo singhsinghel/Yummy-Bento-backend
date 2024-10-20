@@ -16,4 +16,9 @@ const authMiddleware=async(req,res,next)=>{
     }
 }
 
-export  {authMiddleware}
+const createToken=(id)=>{
+    return jwt.sign({id},process.env.JWT_SECRET)
+}
+
+
+export  {authMiddleware,createToken}
