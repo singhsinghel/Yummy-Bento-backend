@@ -73,7 +73,9 @@ const placeOrder=async(req,res)=>{
 
       //adding new coupon and removing used one
       const newDiscount=order.totalAmount>500?25:10;
-      await User.findByIdAndUpdate(req.body.userId,{$pull:{coupon:{_id:req.body.coupon}}},{new:true});
+      if (coupon) {
+         await User.findByIdAndUpdate(req.body.userId,{$pull:{coupon:{_id:req.body.coupon}}},{new:true});
+      }
       const user=await User.findByIdAndUpdate(
          req.body.userId,
          {
