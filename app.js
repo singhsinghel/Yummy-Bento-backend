@@ -1,5 +1,5 @@
 import express from 'express';
-import  cors from'cors';
+import cors from'cors';
 import connectDB from './config/db.js';
 import foodRouter from './routes/foodRoutes.js';
 import userRoute from './routes/userRoutes.js';
@@ -30,18 +30,18 @@ app.use('/api/cart',cartRouter);
 app.use('/api/order',orderRouter);
 app.use('/api/admin',adminRouter)
 
-const keepAliveJob = schedule.scheduleJob('*/5 * * * *', async () => {
-    try {
-        // Replace with your actual app URL
-        await axios.get(`https://yummy-bento-backend.onrender.com/ping`)
-    } catch (error) {
-        console.log('Ping failed:', error.message);
-    }
-});
+// const keepAliveJob = schedule.scheduleJob('*/5 * * * *', async () => {
+//     try {
+//         // Replace with your actual app URL
+//         await axios.get(`https://yummy-bento-backend.onrender.com/ping`)
+//     } catch (error) {
+//         console.log('Ping failed:', error.message);
+//     }
+// });
 
-app.get('/ping', (req, res) => {
-    res.sendStatus(200); // Respond to the ping
-});
+// app.get('/ping', (req, res) => {
+//     res.sendStatus(200); // Respond to the ping
+// });
 app.get('/',(req,res)=>{
     res.send('hiii');
 });

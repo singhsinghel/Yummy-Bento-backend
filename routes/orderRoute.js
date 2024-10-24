@@ -6,7 +6,7 @@ const orderRouter=express.Router();
 
 orderRouter.post('/place',authMiddleware,placeOrder)
 orderRouter.post('/verify',verifyOrder)
-orderRouter.post('/userorders',authMiddleware,userOrders)
+orderRouter.post('/userorders',authMiddleware,userOrders);
 orderRouter.get('/fetchorders',authMiddleware,fetchOrders)
 orderRouter.post('/changestatus',authMiddleware,changeStatus)
 orderRouter.post('/discount',authMiddleware,getDiscount);
